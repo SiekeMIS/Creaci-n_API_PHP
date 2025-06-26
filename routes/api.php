@@ -7,18 +7,12 @@ use App\Http\Controllers\Api\libroController;
 
 Route::get('/libros', [libroController::class, 'index']);
 
-Route::get('/libros/{id}', function (){
-    return 'Obteniendo Un Libro';
-});
+Route::get('/libros/{id}', [libroController::class, 'show']);
 
-Route::post('/libros', function (){
-    return 'Creando libros';
-});
+Route::post('/libros', [libroController::class, 'store']);
 
-Route::put('/libros/{id}', function (){
-    return 'Actualizando Libros';
-});
+Route::put('/libros/{id}', [libroController::class, 'update']);
 
-Route::delete('/libros/{id}', function (){
-    return 'Eliminando Libros';
-});
+Route::patch('/libros/{id}', [libroController::class, 'updatePartial']);
+
+Route::delete('/libros/{id}', [libroController::class, 'delete']);
