@@ -22,37 +22,40 @@ class libroController extends Controller
     }
     public function store(Request $request)
     {
-        $validator = Validator::make($request ->all(), [
+        $validator = Validator::make($request->all(), [
             'titulo' => 'required|max:255',
-            'autor'=> 'required|max:255',
-            'fecha_publicacion'=> 'required|date'
+            'autor' => 'required|max:255',
+            'fecha_publicacion' => 'required|date_format:d-m-Y' // Validar formato día-mes-año
         ]);
 
-        if ($validator->fails()){
+        if ($validator->fails()) {
             $data = [
-                'message' => 'Error en la validación de los',
+                'message' => 'Error en la validación de los datos',
                 'errors' => $validator->errors(),
                 'status' => 400
             ];
-        return response()->json($data, 400);
+            return response()->json($data, 400);
         }
 
-        $libros = Libro::create([
+        // Convertir fecha de "d-m-Y" a "Y-m-d" para MySQL
+        $fecha_publicacion = \Carbon\Carbon::createFromFormat('d-m-Y', $request->fecha_publicacion)->format('Y-m-d');
+
+        $libro = Libro::create([
             'titulo' => $request->titulo,
             'autor' => $request->autor,
-            'fecha_publicacion' => $request->fecha_publicacion
+            'fecha_publicacion' => $fecha_publicacion // Usar la fecha convertida
         ]);
 
-        if (!$libros){
+        if (!$libro) {
             $data = [
                 'message' => 'Error al crear el libro',
                 'status' => 500
             ];
-            return response()->json($data,500);
+            return response()->json($data, 500);
         }
 
         $data = [
-            'libro' => $libros,
+            'libro' => $libro,
             'status' => 201
         ];
 
